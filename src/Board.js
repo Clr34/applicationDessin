@@ -1,5 +1,5 @@
 import React from 'react';
-//import Color from './Components/Color';
+import Format from './Components/Format';
 
 
 class Pixel extends React.Component{
@@ -17,7 +17,7 @@ class Pixel extends React.Component{
 
   changecolor()
   {
-    alert("this pixel has been change at " + this.indexRow + "," + this.indexCol + " " + this.getColor);
+    /*alert("this pixel has been change at " + this.indexRow + "," + this.indexCol + " " + this.getColor);*/
     this.setState({black: !this.state.black})
 
     if(this.getColor === "black")
@@ -41,26 +41,37 @@ class Pixel extends React.Component{
 }     
 
 class Board extends React.Component{ 
+
+    buildtable(nbRow,nbCol)
+    {
+      let table = [];
+
+      for(let i = 1 ; i < nbRow+1; i++)
+      {
+        table.push(this.buildRow(nbCol, i));
+      }
+      return <div>{table}</div>
+    }
+
+    buildRow(nbCol,nmRow)
+    {
+      let row = [];
+      for(let i = 1 ; i < nbCol+1; i++)
+      {
+        row.push(<Pixel indexRow = {nmRow} indexCol = {i} getColor = "White"></Pixel>)
+      }
+      return (
+      <div className="board-row">
+        {row}
+      </div>
+      );
+      
+    }
+
     render(){
       return(
         <div>
-        <div className="board-row">
-          <Pixel indexRow = {1} indexCol = {1} getColor = "White"></Pixel>
-          <Pixel indexRow = {1} indexCol = {2} getColor = "White"></Pixel>
-          <Pixel indexRow = {1} indexCol = {3} getColor = "White"></Pixel>
-        </div>
-
-        <div className="board-row">
-          <Pixel indexRow = {2} indexCol = {1} getColor = "White"></Pixel>
-          <Pixel indexRow = {2} indexCol = {2} getColor = "White"></Pixel>
-          <Pixel indexRow = {2} indexCol = {3} getColor = "White"></Pixel>
-        </div>
-
-        <div className="board-row">
-          <Pixel indexRow = {3} indexCol = {1} getColor = "White"></Pixel>
-          <Pixel indexRow = {3} indexCol = {2} getColor = "White"></Pixel>
-          <Pixel indexRow = {3} indexCol = {3} getColor = "White"></Pixel>
-        </div>
+          {this.buildtable(8,9)}
         </div>
       )
     }
