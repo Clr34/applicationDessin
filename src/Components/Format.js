@@ -10,6 +10,7 @@ class Format extends React.Component{
         window.row_col = this;
     }
 
+    // changer la longueur et la largeur en uniter de pixel
     changeformat()
     {
         alert("vous aller changer le format colonne: " + this.getCol.current.value + " ligne: " + this.getRow.current.value) ;
@@ -19,14 +20,16 @@ class Format extends React.Component{
         alert("Your going to creat " + value + " pixel");
     }
 
+    // recevoir la valeur de la ligne
     getFormatRow()
     {
-        return 6;
+        return this.getRow.current.value;
     }
 
+    // recevoir la valeur de la colonne
     getFormatCol()
     {
-        return 3;
+        return this.getCol.current.value;
     }
 
     render(){

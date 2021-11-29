@@ -5,7 +5,7 @@ import Menu from './Menu';
 function App() {
   return (
     <div className="App">
-        <Board/>
+        <Board nbCol={5} nbRow={6}/>
         <Menu/>
     </div>
   );
