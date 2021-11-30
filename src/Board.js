@@ -9,7 +9,6 @@ class Pixel extends React.Component{
         super(props)
         this.indexCol = this.props.indexCol;
         this.indexRow= this.props.indexRow;
-        this.getColor = this.props.getColor;
     }
 
     changeColor(){
@@ -22,7 +21,7 @@ class Pixel extends React.Component{
     {
         let btn_class  = this.props.color !== 'white' ? "blackButton" : "whiteButton";
         return(
-            // creéation d'une case pixel
+            // création d'une case pixel
             <button className={btn_class} onClick={this.changeColor.bind(this)} id={this.indexRow+","+this.indexCol} >{this.indexRow+","+this.indexCol}</button>
         )
     }
@@ -33,16 +32,33 @@ class Board extends React.Component{
     constructor(props)
     {
         super(props)
-        window.board = this;
         this.state={
-            tableau: Array(this.props.nbRow).fill(Array(this.props.nbCol).fill('white'))
+            tableau: Array(this.props.nbRow).fill().map(() => Array(this.props.nbCol).fill('white')),
+            etape: 0
         };
     }
 
-    //effacer tout les pixels
-    eraseBoard(){
-        this.setState({'clear': 'true'});
-        alert("Your about to erase the board");
+    eraseBoard()
+    {
+        const newTableau = Array(this.props.nbRow).fill().map(() => Array(this.props.nbCol).fill('white'));
+        this.setState({tableau: newTableau});
+    }
+
+    ctrlZ()
+    {
+
+    }
+
+    // action de cliquage sur un pixel
+    onPixelClick(x, y) {
+        const newTableau = [...this.state.tableau];
+        newTableau[x][y] = 'black';
+
+        let step = this.state.etape;
+        step++;
+
+        this.setState({tableau: newTableau, etape: step});
+        console.log(this.state.etape)
     }
 
     //Construire le tableau
@@ -51,57 +67,27 @@ class Board extends React.Component{
         let table = [];
 
         // boucle qui commence à un juste à le nombre de ligne
-        for(let i = 1 ; i < nbRow+1; i++)
+        for(let i = 0 ; i < nbRow; i++)
         {
-            // appelle à la méthode qui construie les ligne
-            table.push(this.buildRow(nbCol, i));
+            let row = [];
+            for (let j = 0 ; j < nbCol; j++)
+            {
+                row.push(<Pixel onPixelClick = {this.onPixelClick.bind(this)} indexRow = {i} indexCol = {j} color ={this.state.tableau[i][j]}></Pixel>)
+            }
+            table.push(<div class="board-row">{row}</div>);
         }
         return <div>{table}</div>
     }
 
-    // action de cliquage sur un pixel
-    onPixelClick(i, j){
-        console.log(i)
-
-        // copy
-        var newTableau = [...this.state.tableau]
-
-        // modify color of pixel(i,j)
-        this.props.color.newTableau[i][j] = 'black';
-        //this.componentWillReceiveProps(color: 'black')
-
-        // changement de l'etat tableau du board
-        this.setState({tableau: newTableau});
-
-    }
-
-    // Construire la ligne du tableau
-    buildRow(nbCol,nmRow)
-    {
-        let row = [];
-
-        // boucle qui commence à un juste à le nombre de colonne
-        for(let i = 1 ; i < nbCol+1; i++)
-        {
-            // passer à la ligne suivante
-            const color = this.state.tableau[nmRow][i]
-            row.push(<Pixel onPixelClick = {this.onPixelClick.bind(this)} indexRow = {nmRow} indexCol = {i} color = {color}></Pixel>)
-        }
-        return (
-            // retour à la ligne
-            <div className="board-row">
-                {row}
-            </div>
-        );
-
-    }
 
     render(){
         return(
             <div>
-                // Construire le tableau de pixel
                 {this.buildtable(this.props.nbRow,this.props.nbCol)}
+                <button onClick={this.eraseBoard.bind(this)}>effacer le board</button>
+                <button onClick={this.ctrlZ.bind(this)}>ctrlZ</button>
             </div>
+
         )
     }
 }
