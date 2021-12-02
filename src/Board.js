@@ -66,7 +66,7 @@ class Board extends React.Component{
     {
         let table = [];
 
-        // boucle qui commence à un juste à le nombre de ligne
+        // boucle qui commence à un juste à le nomnew boardbre de ligne
         for(let i = 0 ; i < nbRow; i++)
         {
             let row = [];
