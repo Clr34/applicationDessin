@@ -45,6 +45,21 @@
     width: 34px;
     color:green;
 }
+.redButton{
+    background: red;
+    border: 1px solid #999;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 34px;
+    height: 34px;
+    margin-right: -1px;
+    margin-top: -1px;
+    padding: 0;
+    text-align: center;
+    width: 34px;
+    color: black;
+}
 
 .board-row:after {
     clear: both;
