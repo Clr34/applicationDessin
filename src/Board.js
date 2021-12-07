@@ -2,6 +2,7 @@ import React from 'react';
 import Format from './Components/Format';
 import Eraser from "./Components/Eraser";
 import useState from 'react-hook-use-state';
+import {buildQueries} from "@testing-library/react";
 
 class Pixel extends React.Component{
 
@@ -31,21 +32,9 @@ class Pixel extends React.Component{
         {let btn_class = 'backButton'}*/
         return(
             // création d'une case pixel
-            <button className={btn_class} onClick={this.changeColor.bind(this)} id={this.indexRow+","+this.indexCol} >{this.indexRow+","+this.indexCol}</button>
+            <button className={btn_class} onClick={this.changeColor.bind(this)} id={this.indexRow+","+this.indexCol} >{this.props.color}</button>
         )
     }
-}
-
-function Color(props)
-{
-    const [color, setColor] = useState("#FFFFFF")
-
-    return (
-        <div>
-            <input type="color" value={color} onChange={e => setColor(e.target.value)}/>{color}
-            <button style={{backgroundColor: color}}>hello</button>
-        </div>
-    );
 }
 
 class Board extends React.Component{
@@ -53,23 +42,43 @@ class Board extends React.Component{
     constructor(props)
     {
         super(props)
+        this.state= {
+            tableau: Array(this.props.nbRow * this.props.nbCol).fill('white'),
+            history: [],
+            step: 0
+        }
+
+/*
         this.state={
             tableau: Array(this.props.nbRow).fill().map(() => Array(this.props.nbCol).fill('white')),
             history: []
-        };
+        };*/
+    }
+
+    changeCoordonnees(i,j)
+    {
+        return ((this.props.nbCol) * i) + j;
     }
 
     eraseBoard()
     {
-        const newTableau = Array(this.props.nbRow).fill().map(() => Array(this.props.nbCol).fill('white'));
-        this.setState({tableau: newTableau});
+        let step = this.state.step;
+        step++;
+
+        let histoire = [...this.state.history];
+        histoire.push(this.state.tableau);
+
+        const newTableau = Array(this.props.nbRow * this.props.nbCol).fill('white');
+        this.setState({tableau: newTableau, step: step, history: histoire});
     }
 
     ctrlZ()
     {
+        let step = this.state.step;
+        step--;
         const histoire = [...this.state.history]
-        const newTableau = histoire[histoire.length -2]
-        this.setState({tableau: newTableau});
+        const newTableau = histoire[step]
+        this.setState({tableau: newTableau, step: step});
         console.log(histoire)
     }
 
@@ -79,14 +88,19 @@ class Board extends React.Component{
         console.log('onclick');
         console.log(this.state.tableau);
 
-        let histoire = [...this.state.history].concat(this.state.tableau);
+        let step = this.state.step;
+        step++;
+
+
+        let histoire = [...this.state.history];
+        histoire.push(this.state.tableau);
 
         // modification du tableau
         let newTableau = [...this.state.tableau];
-        newTableau[x][y] = 'black';
+        newTableau[this.changeCoordonnees(x,y)] = 'black';
 
 
-        this.setState({tableau: newTableau, history: histoire});
+        this.setState({tableau: newTableau, history: histoire, step: step});
         console.log(histoire);
     }
 
@@ -102,11 +116,17 @@ class Board extends React.Component{
             for (let j = 0 ; j < nbCol; j++)
             {
                 row.push(<Pixel onPixelClick = {this.onPixelClick.bind(this)} indexRow = {i} indexCol = {j}
-                                color ={this.state.tableau[i][j]}></Pixel>)
+                                setColor = {this.props.color}
+                                color ={this.state.tableau[this.changeCoordonnees(i, j)]}></Pixel>)
             }
             table.push(<div class="board-row">{row}</div>);
         }
         return <div>{table}</div>
+    }
+
+    changeformat(x,y)
+    {
+        this.buildtable(x,y);
     }
 
 
@@ -116,8 +136,7 @@ class Board extends React.Component{
                 {this.buildtable(this.props.nbRow,this.props.nbCol)}
                 <button onClick={this.eraseBoard.bind(this)}>effacer le board</button>
                 <button onClick={this.ctrlZ.bind(this)}>ctrlZ</button>
-                <Color/>
-                <button>Button Text</button>
+                <button>-----{this.props.color}-----</button>
             </div>
 
         )
