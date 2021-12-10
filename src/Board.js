@@ -43,7 +43,8 @@ class Board extends React.Component{
         this.state= {
             tableau: Array(this.props.nbRow * this.props.nbCol).fill('white'),
             history: [],
-            step: 0
+            step: 0,
+            changingcolor: "#ffffff"
         }
     }
 
@@ -107,7 +108,7 @@ class Board extends React.Component{
             for (let j = 0 ; j < nbCol; j++)
             {
                 row.push(<Pixel onPixelClick = {this.onPixelClick.bind(this)} indexRow = {i} indexCol = {j}
-                                setColor = {this.props.color}
+                                colorPixel = {this.props.setcolor}
                                 color ={this.state.tableau[this.changeCoordonnees(i, j)]}></Pixel>)
             }
             table.push(<div class="board-row">{row}</div>);
@@ -115,13 +116,24 @@ class Board extends React.Component{
         return <div>{table}</div>
     }
 
+    changingColor()
+    {
+        if(this.state.changingcolor !== this.props.setcolor)
+        {
+            this.setState({changingcolor:this.props.setcolor})
+        }
+    }
+
     render(){
+
+        let value_color = this.state.changingcolor;
+
         return(
             <div>
                 {this.buildtable(this.props.nbRow,this.props.nbCol)}
                 <button onClick={this.eraseBoard.bind(this)}>effacer le board</button>
                 <button onClick={this.ctrlZ.bind(this)}>ctrlZ</button>
-                <button>-----{this.props.color}----</button>
+                <button onClick={this.changingColor.bind(this)} style={{backgroundColor: value_color}}>bouton</button>
             </div>
 
         )
